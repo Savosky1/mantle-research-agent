@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Agent — MRA</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-text"><span class="logo-main">Mantle</span> Research Agent</span>
+      <span class="nav-badge">Community Build</span>
+    </div>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="agent.html">Agent</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- AGENT HEADER -->
+  <section class="agent-header">
+    <h1>Mantle Research Agent</h1>
+    <p>Enter a topic, asset, or onchain trend. The agent generates a full research brief powered by live AI analysis.</p>
+    <div class="query-counter">
+      <span id="queries-left">5</span> research queries remaining this session
+    </div>
+  </section>
+
+  <!-- INPUT SECTION -->
+  <section class="agent-input-section">
+
+    <div class="example-prompts">
+      <p class="prompt-label">Try an example:</p>
+      <div class="prompt-pills">
+        <button class="pill" onclick="fillPrompt('Tokenized SpaceX on Mantle')">Tokenized SpaceX on Mantle</button>
+        <button class="pill" onclick="fillPrompt('RWA growth on Mantle Q1 2026')">RWA growth on Mantle Q1 2026</button>
+        <button class="pill" onclick="fillPrompt('InsightX AI prediction market')">InsightX AI prediction market</button>
+        <button class="pill" onclick="fillPrompt('Tokenized equities via xStocks')">Tokenized equities via xStocks</button>
+      </div>
+    </div>
+
+    <div class="input-wrapper">
+      <textarea 
+        id="research-input" 
+        placeholder="e.g. What is driving RWA growth on Mantle in 2026?"
+        rows="3"
+      ></textarea>
+      <button class="btn-primary" id="research-btn" onclick="runResearch()">
+        Research
+      </button>
+    </div>
+
+  </section>
+
+  <!-- OUTPUT SECTION -->
+  <section class="output-section" id="output-section" style="display:none;">
+
+    <div class="output-header">
+      <h2>Research Brief</h2>
+      <button class="btn-copy" onclick="copyBrief()">Copy Brief</button>
+    </div>
+
+    <div class="output-body" id="output-body">
+      <!-- Brief renders here -->
+    </div>
+
+    <div class="powered-by">
+      Powered by Claude AI &nbsp;|&nbsp; Mantle Research Agent
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Mantle Research Agent. Built by <strong>Savosky Wright</strong> for the Mantle Research Challenge 2026</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>
