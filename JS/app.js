@@ -186,3 +186,56 @@ function copyBrief() {
 }
 
 initSession();
+
+// ========================
+// LIVE ONCHAIN DATA
+// ========================
+async function fetchLiveData() {
+  fetchMNTPrice();
+  fetchMantleTVL();
+}
+
+async function fetchMNTPrice() {
+  try {
+    const response = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=mantle&vs_currencies=usd&include_24hr_change=true'
+    );
+    const data = await response.json();
+
+    if (data.mantle) {
+      const price = data.mantle.usd.toFixed(4);
+      const change = data.mantle.usd_24h_change.toFixed(2);
+      const sign = change >= 0 ? '+' : '';
+      const color = change >= 0 ? 'var(--green)' : '#ff6b6b';
+
+      document.getElementById('mnt-price').innerHTML =
+        `$${price} <span style="font-size:0.75rem; color:${color}">${sign}${change}%</span>`;
+    }
+  } catch (error) {
+    document.getElementById('mnt-price').textContent = 'Unavailable';
+  }
+}
+
+async function fetchMantleTVL() {
+  try {
+    const response = await fetch('https://api.llama.fi/v2/chains');
+    const chains = await response.json();
+
+    const mantle = chains.find(chain =>
+      chain.name && chain.name.toLowerCase() === 'mantle'
+    );
+
+    if (mantle && mantle.tvl) {
+      const formatted = (mantle.tvl / 1e9).toFixed(2);
+      document.getElementById('mantle-tvl').textContent = `$${formatted}B`;
+    } else {
+      document.getElementById('mantle-tvl').textContent = 'Unavailable';
+    }
+  } catch (error) {
+    document.getElementById('mantle-tvl').textContent = 'Unavailable';
+  }
+}
+
+// Fetch on page load, refresh every 5 minutes
+fetchLiveData();
+setInterval(fetchLiveData, 5 * 60 * 1000);
