@@ -55,16 +55,18 @@ function fillPrompt(text) {
 // ========================
 // RENDER OUTPUT
 // ========================
+
 function renderBrief(text) {
   const sections = [
-    { key: 'SUMMARY', label: 'Summary' },
-    { key: 'MARKET CONTEXT', label: 'Market Context' },
-    { key: 'WHAT IS HAPPENING ON MANTLE', label: 'What Is Happening on Mantle' },
-    { key: 'KEY INSIGHTS', label: 'Key Insights' },
-    { key: 'WHAT COMES NEXT', label: 'What Comes Next' }
+    { key: 'SUMMARY', label: 'Summary', icon: '📋' },
+    { key: 'MARKET CONTEXT', label: 'Market Context', icon: '📈' },
+    { key: 'WHAT IS HAPPENING ON MANTLE', label: 'What Is Happening on Mantle', icon: '⛓️' },
+    { key: 'KEY INSIGHTS', label: 'Key Insights', icon: '💡' },
+    { key: 'WHAT COMES NEXT', label: 'What Comes Next', icon: '🔭' },
+    { key: 'DATA SOURCES', label: 'Data Sources', icon: '🔗' }
   ];
 
-  let html = '';
+  let html = '<div class="brief-grid">';
 
   sections.forEach((section, index) => {
     const nextKey = sections[index + 1] ? sections[index + 1].key : null;
@@ -85,15 +87,25 @@ function renderBrief(text) {
     }
 
     if (content) {
+      const isWide = section.key === 'SUMMARY' ||
+                     section.key === 'WHAT COMES NEXT' ||
+                     section.key === 'DATA SOURCES';
+
       html += `
-        <div class="brief-section">
-          <h3>${section.label}</h3>
-          <p>${content.replace(/\n/g, '<br/>')}</p>
+        <div class="brief-card ${isWide ? 'brief-card-wide' : ''}">
+          <div class="brief-card-header">
+            <span class="brief-card-icon">${section.icon}</span>
+            <h3>${section.label}</h3>
+          </div>
+          <div class="brief-card-body">
+            ${content.replace(/\n/g, '<br/>')}
+          </div>
         </div>
       `;
     }
   });
 
+  html += '</div>';
   return html;
 }
 
