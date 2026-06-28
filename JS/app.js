@@ -2,7 +2,7 @@
 // SESSION QUERY LIMIT (TIME-BASED)
 // ========================
 const RESET_HOURS = 24;
-let queriesLeft = 5;
+let queriesLeft = 20;
 let resetAt = 0;
 
 function initSession() {
@@ -25,7 +25,7 @@ function initSession() {
 }
 
 function startNewSession() {
-  queriesLeft = 5;
+  queriesLeft = 20;
   resetAt = Date.now() + (RESET_HOURS * 60 * 60 * 1000);
   saveSession();
 }

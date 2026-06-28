@@ -27,7 +27,7 @@ WHAT IS HAPPENING ON MANTLE
 Connect this topic directly to Mantle's ecosystem. Reference real projects, live data points, or recent developments.
 
 KEY INSIGHTS
-Give 3 sharp, specific insights a researcher or investor would find valuable. Number them 1, 2, 3. Use live data to support insights where possible.
+Give 3 sharp, specific insights a researcher or investor would find valuable. Number them 1, 2, 3. Each insight must be direct, specific, and actionable — not generic observations. Use live data to support insights where possible. Avoid phrases like "significant development" or "poised for growth." Say exactly what it means and why it matters right now.
 
 WHAT COMES NEXT
 Make a clear, reasoned case for where this is heading. Be direct. Take a position.
@@ -38,11 +38,14 @@ List the data sources used in this brief.
 Rules:
 - Always use the live data provided when it is relevant to the topic
 - Never make up data or invent statistics beyond what is provided
-- Always sound like a sharp human analyst, not a chatbot
+- Always sound like a sharp human analyst, not a chatbot — direct, confident, specific
+- Never use vague filler phrases like "significant development", "poised for growth", "it is worth noting", or "in today's world"
+- Every sentence must earn its place — if it doesn't add specific value, cut it
 - Be concise but substantive
 - No bullet points except in KEY INSIGHTS and DATA SOURCES
 - No greetings or sign-offs
 - Get straight into the brief
+- Take clear positions — don't hedge everything with "could" and "might"
 `;
 
 async function fetchLiveMarketData() {
@@ -123,31 +126,59 @@ exports.handler = async function(event) {
     const liveDataString = buildLiveDataString(liveData);
     const systemPrompt = SYSTEM_PROMPT_BASE.replace('{LIVE_DATA}', liveDataString);
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    // const response = await fetch('https://api.anthropic.com/v1/messages', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'x-api-key': process.env.ANTHROPIC_API_KEY,
+    //     'anthropic-version': '2023-06-01'
+    //   },
+    //   body: JSON.stringify({
+    //     model: 'claude-sonnet-4-6',
+    //     max_tokens: 1200,
+    //     system: systemPrompt,
+    //     messages: [
+    //       { role: 'user', content: `Research topic: ${topic}` }
+    //     ]
+    //   })
+    // });
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1200,
-        system: systemPrompt,
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 1000,
         messages: [
+          // { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'system', content: systemPrompt },
           { role: 'user', content: `Research topic: ${topic}` }
         ]
       })
     });
 
+    // const data = await response.json();
+
+    // return {
+    //   statusCode: 200,
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(data)
+    // };
+
     const data = await response.json();
+
+    const briefText = data.choices[0].message.content;
 
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        content: [{ text: briefText }]
+      })
     };
 
   } catch (error) {
